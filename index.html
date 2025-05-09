@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Task Manager</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://unpkg.com/@tailwindcss/browser@latest"></script>
+    <style>
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 p-4 md:p-8">
+    <h1 class="text-3xl font-semibold text-center text-gray-800 mb-6">Task Manager</h1>
+    <div class="container mx-auto rounded-lg shadow-md bg-white p-4 md:p-6">
+      <div class="todoSection">
+        <div class="todoForm rounded-lg bg-gray-200 p-4 mb-4 flex flex-col items-center gap-4">
+          <input
+            type="text"
+            id="taskInput"
+            placeholder="Enter your task"
+            class="w-full sm:w-auto max-w-md px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+          />
+          <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            <input
+              type="date"
+              id="dueDateInput"
+              class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            />
+            <select
+              id="priorityInput"
+              class="px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="low">Low</option>
+              <option value="medium">Medium</option>
+              <option value="high">High</option>
+            </select>
+            <button id="addTaskBtn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300">Add Task</button>
+          </div>
+        </div>
+
+        <div class="taskContainer flex flex-wrap justify-center gap-6 p-4" id="taskList">
+          </div>
+      </div>
+    </div>
+    <script>
+      const taskInput = document.getElementById("taskInput");
+      const dueDateInput = document.getElementById("dueDateInput");
+      const priorityInput = document.getElementById("priorityInput");
+      const addTaskBtn = document.getElementById("addTaskBtn");
+      const taskList = document.getElementById("taskList");
+
+      addTaskBtn.addEventListener("click", addTask);
+
+      function addTask() {
+        const taskText = taskInput.value;
+        const dueDate = dueDateInput.value;
+        const priority = priorityInput.value;
+
+        if (taskText.trim() === "") {
+          alert("Please enter a task!");
+          return;
+        }
+
+        const taskCard = document.createElement("div");
+        taskCard.className = "taskCard rounded-lg shadow-md bg-white w-full sm:w-96 p-4 flex flex-col justify-between items-start";
+
+        const taskContent = document.createElement("div");
+        taskContent.className = "taskContent space-y-2 mb-4 w-full";
+
+        const taskTextElement = document.createElement("p");
+        taskTextElement.textContent = `Task: ${taskText}`;
+        taskTextElement.className = "text-gray-700";
+
+        const dueDateElement = document.createElement("p");
+        dueDateElement.textContent = `Due Date: ${dueDate}`;
+        dueDateElement.className = "text-gray-600";
+
+        const priorityElement = document.createElement("p");
+        priorityElement.textContent = `Priority: ${priority}`;
+        priorityElement.className =
+          priority === "high" ? "text-red-500" :
+          priority === "medium" ? "text-yellow-500" : "text-green-500";
+
+        taskContent.appendChild(taskTextElement);
+        taskContent.appendChild(dueDateElement);
+        taskContent.appendChild(priorityElement);
+
+        const buttonContainer = document.createElement("div");
+        buttonContainer.className = "buttonContainer flex gap-2 w-full justify-end";
+
+        const completeBtn = document.createElement("button");
+        completeBtn.textContent = "Complete";
+        completeBtn.className = "bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 text-sm";
+        completeBtn.addEventListener("click", completeTask);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.textContent = "Delete";
+        deleteBtn.className = "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md shadow-md transition duration-300 text-sm";
+        deleteBtn.addEventListener("click", deleteTask);
+
+        buttonContainer.appendChild(completeBtn);
+        buttonContainer.appendChild(deleteBtn);
+
+        taskCard.appendChild(taskContent);
+        taskCard.appendChild(buttonContainer);
+        taskList.appendChild(taskCard);
+
+        taskInput.value = "";
+        dueDateInput.value = "";
+        priorityInput.value = "low";
+      }
+
+      function completeTask(event) {
+        const taskCard = event.target.closest(".taskCard");
+        taskCard.classList.toggle("completed");
+        const taskContent = taskCard.querySelector(".taskContent");
+        if (taskCard.classList.contains("completed")) {
+          taskContent.classList.add("line-through", "text-gray-400");
+        } else {
+          taskContent.classList.remove("line-through", "text-gray-400");
+        }
+      }
+
+      function deleteTask(event) {
+        const taskCard = event.target.closest(".taskCard");
+        taskCard.remove();
+      }
+    </script>
+  </body>
+</html>
+
+
